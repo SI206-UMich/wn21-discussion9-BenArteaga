@@ -22,34 +22,33 @@ def getEggMoves(pokemon):
     soup = BeautifulSoup(r.text, 'html.parser')
     moves = []
 
-    header_tags = soup.find_all('h3')
-    for tag in header_tags:
-        if tag.text == 'Egg moves':
-            print(tag.text)
-            # get all of the moves
-
+    table_tag = soup.find_all('table', class_='data-table')[2]
+    move_tags = table_tag.find_all('a', class_='ent-name')
+    for move in move_tags:
+        moves.append(move.text)
+    return moves
     
 
 # Task 3: Create a regex expression that will find all the times that have these formats: @2pm @5 pm @10am
 # Return a list of these times without the '@' symbol. E.g. ['2pm', '5 pm', '10am']
 def findLetters(sentences):
     # initialize an empty list
-    
+    results = []
 
     # define the regular expression
-    
+    regex = '@\d{1,2}am|@\d{1,2}pm|@\d{1,2} am|@\d{1,2} pm'
 
     # loop through each sentence or phrase in sentences
-    
-
-    # find all the words that match the regular expression in each sentence
-       
-
-    # loop through the found words and add the words to your empty list
-
+    for phrase in sentences:
+        # find all the words that match the regular expression in each sentence
+        found_words = re.findall(regex, phrase)
+        # loop through the found words and add the words to your empty list
+        for word in found_words:
+            word = word.strip('@')
+            results.append(word)
 
     #return the list of the last letter of all words that begin or end with a capital letter
-    pass
+    return results
 
 
 
@@ -70,9 +69,9 @@ class TestAllMethods(unittest.TestCase):
     def test_egg_moves(self):
         self.assertEqual(getEggMoves('scizor'), ['Counter', 'Defog', 'Feint', 'Night Slash', 'Quick Guard'])
 
-    # def test_findLetters(self):
-    #     self.assertEqual(findLetters(['Come eat lunch at 12','there"s a party @2pm', 'practice @7am','nothing']), ['2pm', '7am'])
-    #     self.assertEqual(findLetters(['There is show @12pm if you want to join','I will be there @ 2pm', 'come at @3 pm will be better']), ['12pm', '3 pm'])
+    def test_findLetters(self):
+        self.assertEqual(findLetters(['Come eat lunch at 12','there"s a party @2pm', 'practice @7am','nothing']), ['2pm', '7am'])
+        self.assertEqual(findLetters(['There is show @12pm if you want to join','I will be there @ 2pm', 'come at @3 pm will be better']), ['12pm', '3 pm'])
 
 if __name__ == "__main__":
     main()
